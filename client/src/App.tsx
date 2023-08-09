@@ -4,8 +4,8 @@ import './App.css'
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState('');
-  const [done, setDone] = useState(false);
   const [change, setChange] = useState(false);
+  // const [done, setDone] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:8080/")
@@ -21,11 +21,21 @@ function App() {
       .catch(err => {
         console.log("Error fetching resources: " + err);
       })
-  }, [done, change])
+  }, [change])
 
   const toggleTodo = async (id: any) => {
-    setDone(!done);
+    // setDone(!done);
     setChange(!change);
+        const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        return { ...todo, done: !todo.done };
+      }
+      return todo;
+    });
+
+    setTodos(updatedTodos);
+
+
     await fetch(`http://localhost:8080/${id}`, {
       "method": "PUT",
       "headers": { "Content-Type": "application/json" },
@@ -81,22 +91,18 @@ function App() {
       </form>
 
       {todos.length < 1 ? (
-      <p>No data</p>
+        <p>No data</p>
       ) : (
-      <ul>
-        {todos.map(todo => (
-          <li key={todo.id}>
-            <input
-              type="checkbox"
-              checked={todo.done}
-              onClick={() => toggleTodo(todo.id)}
-            />
-            <span key={todo.id} onClick={() => toggleTodo(todo.id)} className={done ? "done" : "notdone"}>{todo.title}</span>
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-)}
+        <div>
+          {todos.map(todo => (
+            <li key={todo.id}>
+              {/* <span onClick={() => toggleTodo(todo.id)} className={done ? "todo done" : "todo notdone"}>{todo.title}</span> */}
+              <span onClick={() => toggleTodo(todo.id)} style={{ textDecoration: todo.done ? "line-through" : "none", cursor: "pointer"}}>{todo.title}</span>
+              <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+            </li>
+          ))}
+        </div>
+      )}
     </>
   )
 }
