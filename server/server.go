@@ -29,7 +29,6 @@ func initDB() {
 	}
 }
 
-
 func toggleDone(c *gin.Context) {
 	todoId := c.Param("id")
 	i, err := strconv.Atoi(todoId)
@@ -101,7 +100,7 @@ func createTodo(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 	}
 
-	_, err := db.Exec(`CREATE todo IF NOT EXISTS todo(
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS todo(
         id SERIAL,
         title VARCHAR(100) NOT NULL,
         done BOOL

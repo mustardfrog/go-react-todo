@@ -18,15 +18,6 @@ function App() {
   }, [change])
 
   const toggleTodo = async (id: any) => {
-    setChange(!change);
-    const updatedTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return { ...todo, done: !todo.done };
-      }
-      return todo;
-    });
-
-    setTodos(updatedTodos);
 
 
     await fetch(`http://localhost:8080/${id}`, {
@@ -41,6 +32,15 @@ function App() {
       })
       .catch(err => console.log(err))
 
+    setChange(!change);
+    const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        return { ...todo, done: !todo.done };
+      }
+      return todo;
+    });
+
+    setTodos(updatedTodos);
   }
 
   const deleteTodo = async (id: any) => {
