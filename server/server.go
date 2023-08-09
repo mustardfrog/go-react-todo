@@ -29,16 +29,6 @@ func initDB() {
 	}
 }
 
-func helloId(c *gin.Context) {
-	todoId := c.Param("id")
-	i, err := strconv.Atoi(todoId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, i)
-}
 
 func toggleDone(c *gin.Context) {
 	todoId := c.Param("id")
@@ -160,6 +150,4 @@ func main() {
 	r.DELETE("/:id", deleteTodo)
 
 	r.Run()
-
-	defer db.Close()
 }
