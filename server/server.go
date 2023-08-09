@@ -75,16 +75,13 @@ func toggleDone(c *gin.Context) {
 
 func getTodo(c *gin.Context) {
 	rows, err := db.Query("SELECT * FROM todo;")
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		fmt.Println("Error SELECTING database")
 	}
-
 	defer rows.Close()
 
 	var todos []Todo
-
 	for rows.Next() {
 		var todo Todo
 		if err := rows.Scan(&todo.ID, &todo.Title, &todo.Done); err != nil {
@@ -114,6 +111,16 @@ func createTodo(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 	}
 
+	_, err := db.Exec(`CREATE todo IF NOT EXISTS todo(
+        id SERIAL,
+        title VARCHAR(100) NOT NULL,
+        done BOOL
+    );
+    `)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"err": "Error creating table"})
+		return
+	}
 	rows := db.QueryRow("INSERT INTO todo (title, done) VALUES ($1, $2) RETURNING id;", todo.Title, todo.Done).Scan(&todo.ID)
 	if rows != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": "This is error"})
@@ -148,8 +155,8 @@ func main() {
 
 	r := gin.Default()
 	r.GET("/", getTodo)
-	r.PUT("/:id", toggleDone)
 	r.POST("/", createTodo)
+	r.PUT("/:id", toggleDone)
 	r.DELETE("/:id", deleteTodo)
 
 	r.Run()

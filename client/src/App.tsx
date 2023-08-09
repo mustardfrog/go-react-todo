@@ -5,28 +5,21 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState('');
   const [change, setChange] = useState(false);
-  // const [done, setDone] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:8080/")
-      .then(res => {
-        return res.json();
-      })
+      .then(res => { return res.json(); })
       .then(r => {
         if (r.length < 1 || r === null) {
           setTodos([])
         }
         setTodos(r);
-      })
-      .catch(err => {
-        console.log("Error fetching resources: " + err);
-      })
+      }).catch(err => { console.log("Error fetching resources: " + err); })
   }, [change])
 
   const toggleTodo = async (id: any) => {
-    // setDone(!done);
     setChange(!change);
-        const updatedTodos = todos.map(todo => {
+    const updatedTodos = todos.map(todo => {
       if (todo.id === id) {
         return { ...todo, done: !todo.done };
       }
@@ -96,8 +89,7 @@ function App() {
         <div>
           {todos.map(todo => (
             <li key={todo.id}>
-              {/* <span onClick={() => toggleTodo(todo.id)} className={done ? "todo done" : "todo notdone"}>{todo.title}</span> */}
-              <span onClick={() => toggleTodo(todo.id)} style={{ textDecoration: todo.done ? "line-through" : "none", cursor: "pointer"}}>{todo.title}</span>
+              <span onClick={() => toggleTodo(todo.id)} style={{ textDecoration: todo.done ? "line-through" : "none", cursor: "pointer" }}>{todo.title}</span>
               <button onClick={() => deleteTodo(todo.id)}>Delete</button>
             </li>
           ))}
