@@ -20,8 +20,15 @@ type Todo struct {
 var db *sql.DB
 
 func initDB() {
+    // go_todo is your postgres database name
+    // to create a db name called 'hello_todo', run the following command
+    // `createdb hello_todo`
+    // and replace `go_todo` with `hello_todo`
+    // make sure you are running postgres sql server
+    // `sudo systemctl start postgresql.service`
+    dbString :=  "postgres://your_username:1234@localhost/go_todo?sslmode=disable"
 	var err error
-	db, err = sql.Open("postgres", "postgres://chaeng:1234@localhost/go_todo?sslmode=disable")
+	db, err = sql.Open("postgres", dbString)
 
 	if err != nil {
 		log.Fatal(err)
